@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 )
 
@@ -45,11 +45,11 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 	result := sumNumbers(intSlice)
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	slog.Info("msg", result)
-	err = json.NewEncoder(w).Encode(result)
+	_, err = fmt.Fprintf(w, "%d", result)
 	if err != nil {
+		http.Error(w, "Failed to write response", http.StatusInternalServerError)
 		return
 	}
 }
